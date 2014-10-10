@@ -73,4 +73,44 @@ for($i=0;$i<count($prize_arr);$i++){
 } 
 $res['no'] = $pr; 
 echo json_encode($res); 
+
+
+if(!function_exists('random'))
+{
+	function random($arData, $n=1){
+		if (!$arData) {
+			return false;
+		}
+		$Point = 1;
+		foreach($arData as $_d){
+			if(is_int($_d))
+				continue;
+			if($len = strlen(substr($_d,strpos(strval($_d),'.')+1))){
+				$Point = $len > $Point?($Point = $len):$Point;
+			}
+		}
+		foreach($arData as &$_v){
+			$_v*=pow(10,$Point);
+		}
+		unset($_v);
+		$sum = array_sum($arData);
+		$seeds = array();
+		$start=0;
+		foreach($arData as $k=>$p){
+			if($p==0) continue;
+			$seeds += array_fill($start, $p, $k);
+			$start += $p;
+		}
+		shuffle($seeds);
+		$count = count($seeds);
+		$result = array();
+		$i = $n;
+		while($i>0){
+			$rand = mt_rand(0, $count-1);
+			$result[] = $seeds[$rand];
+			$i--;
+		}
+		return $result;
+	}
+}
 ?>
